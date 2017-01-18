@@ -165,6 +165,137 @@ var rentalModifications = [{
   'pickupDate': '2015-12-05'
 }];
 
+
+function Exercise1(){
+  rentals.forEach(function(entry){
+    const time = (new Date(entry.returnDate.replace(/-/g,'/')) - new Date(entry.pickupDate.replace(/-/g,'/')))/(24*60*60*1000)+1;
+    cars.forEach(function(input){
+      if (input.id == entry.carId){
+        entry.price = input.pricePerDay*time + input.pricePerKm*entry.distance;
+      }
+    });
+  });
+}
+
+function Exercise2(){
+  rentals.forEach(function(entry){
+    var rentalPrice = 0;
+    const time = (new Date(entry.returnDate.replace(/-/g,'/')) - new Date(entry.pickupDate.replace(/-/g,'/')))/(24*60*60*1000)+1;
+    cars.forEach(function(input){
+      if (input.id == entry.carId){
+        rentalPrice = input.pricePerKm*entry.distance;
+        if(time > 1){
+          rentalPrice += 9*input.pricePerDay*time / 10;
+        }
+        else if(time > 4){
+          rentalPrice += 7*input.pricePerDay*time / 10;
+        }
+        else if(time > 10){
+          rentalPrice += 5*input.pricePerDay*time / 10;
+        }
+        else{
+          rentalPrice += input.pricePerDay*time;
+        }
+        entry.price = rentalPrice;
+      }
+    });
+  });
+}
+
+function Exercise3(){
+  rentals.forEach(function(entry){
+    var rentalPrice = 0;
+    const time = (new Date(entry.returnDate.replace(/-/g,'/')) - new Date(entry.pickupDate.replace(/-/g,'/')))/(24*60*60*1000)+1;
+    cars.forEach(function(input){
+      if (input.id == entry.carId){
+        rentalPrice = input.pricePerKm*entry.distance;
+        if(time > 1){
+          rentalPrice += 9*input.pricePerDay*time / 10;
+        }
+        else if(time > 4){
+          rentalPrice += 7*input.pricePerDay*time / 10;
+        }
+        else if(time > 10){
+          rentalPrice += 5*input.pricePerDay*time / 10;
+        }
+        else{
+          rentalPrice += input.pricePerDay*time;
+        }
+        entry.price = rentalPrice;
+      }
+    });
+    entry.commission.insurance = 15*rentalPrice / 100;
+    entry.commission.assistance = time;
+    entry.commission.drivy = entry.commission.insurance-entry.commission.assistance;
+  });
+}
+
+function Exercise4(){
+  rentals.forEach(function(entry){
+    var rentalPrice = 0;
+    const time = (new Date(entry.returnDate.replace(/-/g,'/')) - new Date(entry.pickupDate.replace(/-/g,'/')))/(24*60*60*1000)+1;
+    cars.forEach(function(input){
+      if (input.id == entry.carId){
+        rentalPrice = input.pricePerKm*entry.distance;
+        if(time > 1){
+          rentalPrice += 9*input.pricePerDay*time / 10;
+        }
+        else if(time > 4){
+          rentalPrice += 7*input.pricePerDay*time / 10;
+        }
+        else if(time > 10){
+          rentalPrice += 5*input.pricePerDay*time / 10;
+        }
+        else{
+          rentalPrice += input.pricePerDay*time;
+        }
+        entry.price = rentalPrice;
+      }
+    });
+    entry.commission.insurance = 15*rentalPrice / 100;
+    entry.commission.assistance = time;
+    entry.commission.drivy = entry.commission.insurance-entry.commission.assistance;
+    if (entry.options.deductibleReduction == true){
+      entry.commission.drivy += 4*time;
+    }
+  });
+}
+
+function searchActor(str){
+  for (var i=0; i<actors.length;i++){
+    if (actors[i].rentalId==str)
+      return i;
+  }
+}
+
+function Exercise5(){
+  Exercise4();
+  for (var i=0; i<rentals.length;i++){
+    actors[searchActor(rentals[i].id)].payment[0].amount=rentals[i].price;
+    actors[searchActor(rentals[i].id)].payment[1].amount=rentals[i].price-rentals[i].commission.insurance*2;
+    actors[searchActor(rentals[i].id)].payment[2].amount=rentals[i].commission.insurance;
+    actors[searchActor(rentals[i].id)].payment[3].amount=rentals[i].commission.assistance;
+    actors[searchActor(rentals[i].id)].payment[4].amount=rentals[i].commission.drivy;
+  }
+}
+
+function searchRental(str){
+  for (var i=0; i<rentals.length;i++){
+    if (rentals[i].id==str)
+      return i;
+  }
+}
+
+function Exercise6(){
+  for (var i=0; i<rentalModifications.length;i++){
+    if (rentalModifications[i].pickupDate) rentals[searchRental(rentalModifications[i].rentalId)].pickupDate=rentalModifications[i].pickupDate;
+    if (rentalModifications[i].distance) rentals[searchRental(rentalModifications[i].rentalId)].distance=rentalModifications[i].distance;
+    if (rentalModifications[i].returnDate) rentals[searchRental(rentalModifications[i].rentalId)].returnDate=rentalModifications[i].returnDate;
+  }
+  Exercise5();
+}
+
+
 console.log(cars);
 console.log(rentals);
 console.log(actors);
